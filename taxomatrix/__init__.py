@@ -1,0 +1,2 @@
+"""TaxoMatrix CLI prototype."""
+

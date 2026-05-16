@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: TaxoMatrix
+message: "If you use TaxoMatrix, please cite this software."
+type: software
+authors:
+  - family-names: Nweze
+    given-names: Justus Amuche
+version: 0.1.0
+date-released: 2026-05-17
+license: MIT
+abstract: >-
+  TaxoMatrix is a command-line workflow for microbial genome ANI calculation,
+  matrix export, and clustered publication-quality heatmap generation.
+keywords:
+  - ANI
+  - comparative genomics
+  - microbial genomes
+  - FastANI
