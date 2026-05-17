@@ -204,3 +204,7 @@ TaxoMatrix can be cited using the metadata in [CITATION.cff](CITATION.cff). A Ze
 ## Version
 
 This release is intended as `TaxoMatrix v0.1.1`.
+
+### v0.1.1
+
+TaxoMatrix v0.1.1 adds accession-based genome downloads, upstream citation guidance, and release metadata cleanup while preserving the original ANI workflow.
