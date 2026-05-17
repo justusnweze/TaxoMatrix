@@ -62,6 +62,31 @@ def discover_fasta_files(input_dir: Path) -> list[Path]:
     return fasta_files
 
 
+def read_accessions_file(path: Path) -> list[str]:
+    accessions: list[str] = []
+    invalid: list[str] = []
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if not ASSEMBLY_ACCESSION_PATTERN.fullmatch(line):
+            invalid.append(line)
+            continue
+        accessions.append(line)
+
+    if invalid:
+        raise ValueError(
+            "Invalid accession IDs detected in accession file. "
+            "Expected assembly accessions beginning with GCA_ or GCF_. "
+            f"Invalid entries: {', '.join(invalid)}"
+        )
+
+    if not accessions:
+        raise ValueError(f"No valid assembly accession IDs were found in {path}.")
+
+    return accessions
+
+
 def genome_label(path: Path) -> str:
     return path.stem
 
@@ -242,19 +267,25 @@ def write_run_log(
     runtime_seconds: float,
     genome_count: int,
     fastani_version: str,
+    metadata_mode_used: bool,
+    accession_mode_used: bool,
     genome_labels: Iterable[str],
     output_paths: Iterable[str],
+    notes: Iterable[str],
     warnings: Iterable[str],
 ) -> Path:
     warning_lines = list(warnings)
     label_lines = list(genome_labels)
     output_lines = list(output_paths)
+    note_lines = list(notes)
     log_lines = [
         f"timestamp: {datetime.now().isoformat(timespec='seconds')}",
         f"command: {command}",
         f"runtime_seconds: {runtime_seconds:.2f}",
         f"genome_count: {genome_count}",
         f"fastani_version: {fastani_version}",
+        f"metadata_mode_used: {metadata_mode_used}",
+        f"accession_download_mode_used: {accession_mode_used}",
     ]
     if fastani_command:
         log_lines.append(f"fastani_command: {fastani_command}")
@@ -262,11 +293,38 @@ def write_run_log(
     log_lines.extend(f"- {label}" for label in label_lines)
     log_lines.append("output_paths:")
     log_lines.extend(f"- {path}" for path in output_lines)
+    log_lines.append("notes:")
+    if note_lines:
+        log_lines.extend(f"- {note}" for note in note_lines)
+    else:
+        log_lines.append("- none")
     log_lines.append("warnings:")
     if warning_lines:
         log_lines.extend(f"- {warning}" for warning in warning_lines)
     else:
         log_lines.append("- none")
+    log_lines.append("citation_note: Please cite FastANI and other upstream tools where appropriate.")
 
     output_path.write_text("\n".join(log_lines) + "\n", encoding="utf-8")
+    return output_path
+
+
+def write_citation_acknowledgement(
+    output_path: Path,
+    *,
+    project_root: Path,
+) -> Path:
+    readme_url = "https://github.com/justusnweze/TaxoMatrix/blob/main/README.md"
+    dependency_url = "https://github.com/justusnweze/TaxoMatrix/blob/main/DEPENDENCY_CITATIONS.md"
+    lines = [
+        "TaxoMatrix citation and acknowledgement guidance",
+        "",
+        "Please cite TaxoMatrix using the metadata provided in CITATION.cff.",
+        "Please also cite FastANI for ANI calculations.",
+        "Please also cite other upstream tools used in the workflow where appropriate.",
+        "",
+        f"README: {readme_url}",
+        f"Dependency citations: {dependency_url}",
+    ]
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return output_path

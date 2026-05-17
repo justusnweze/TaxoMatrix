@@ -17,6 +17,7 @@ TaxoMatrix is a Python command-line workflow for generating all-vs-all ANI outpu
 ```text
 taxomatrix/
   __init__.py
+  downloader.py
   main.py
   fastani_runner.py
   parser.py
@@ -36,6 +37,7 @@ README.md
 
 - Python 3.11
 - FastANI installed and available on `PATH`, or provided explicitly with `--fastani-binary`
+- NCBI datasets CLI for accession-download mode (`--accessions`)
 
 Create an environment with Conda:
 
@@ -48,6 +50,12 @@ Install Python dependencies:
 
 ```bash
 python3.11 -m pip install -r requirements.txt
+```
+
+Install the NCBI datasets CLI if you want to download genomes by accession:
+
+```bash
+conda install -c conda-forge ncbi-datasets-cli
 ```
 
 ## Usage
@@ -103,6 +111,22 @@ python3.11 -m taxomatrix.main run /path/to/genome_fastas \
   --metadata example_metadata.tsv
 ```
 
+Run from an accession file:
+
+```bash
+python3.11 -m taxomatrix.main run \
+  --accessions genomes.txt \
+  --output-dir results/taxomatrix_accessions
+```
+
+Combine local genomes with downloaded accessions:
+
+```bash
+python3.11 -m taxomatrix.main run /path/to/genome_fastas \
+  --accessions genomes.txt \
+  --output-dir results/taxomatrix_combined
+```
+
 ## Outputs
 
 Each run writes:
@@ -116,10 +140,12 @@ Each run writes:
 - `genome_label_mapping.tsv`
 - `taxomatrix.log`
 - `metadata_legend.tsv` when `--metadata` is supplied
+- `downloaded_genomes/` when `--accessions` is supplied
+- `CITATION_AND_ACKNOWLEDGEMENT.txt`
 
 ## Example metadata
 
-An example metadata file is included as [example_metadata.tsv](/home/justus/example_metadata.tsv:1):
+An example metadata file is included as [example_metadata.tsv](example_metadata.tsv):
 
 ```tsv
 genome	habitat	source	pH
@@ -131,7 +157,40 @@ GCA_000372845.1	freshwater	isolate	7.1
 
 ## Example command outputs
 
-Representative command outputs are documented in [EXAMPLE_COMMAND_OUTPUTS.md](/home/justus/EXAMPLE_COMMAND_OUTPUTS.md:1).
+Representative command outputs are documented in [EXAMPLE_COMMAND_OUTPUTS.md](EXAMPLE_COMMAND_OUTPUTS.md).
+
+## Accession mode
+
+TaxoMatrix can also download public assemblies from NCBI using an accession file containing `GCA_` or `GCF_` assembly accessions, one per line. Downloaded genomes are cached in `output_dir/downloaded_genomes/` so reruns do not redownload successful assemblies unnecessarily.
+
+## Dependencies and Citation
+
+TaxoMatrix builds upon established open-source bioinformatics and scientific Python tools. For transparent and reproducible scientific reporting, please cite both TaxoMatrix and the upstream software used in your workflow.
+
+### Please also cite upstream tools
+
+- FastANI
+  Used for pairwise Average Nucleotide Identity calculations.
+- pandas
+  Used for matrix handling and tabular data processing.
+- matplotlib
+  Used for figure rendering.
+- seaborn
+  Used for clustered heatmap visualization.
+- scipy
+  Used for hierarchical clustering.
+- openpyxl
+  Used for Excel workbook export.
+- NCBI datasets CLI (if accession mode is used)
+  Used for downloading public genome assemblies.
+
+TaxoMatrix does not replace citation of the underlying computational tools used in the workflow.
+
+Detailed dependency citation placeholders are collected in [DEPENDENCY_CITATIONS.md](DEPENDENCY_CITATIONS.md).
+
+## Citation and DOI
+
+TaxoMatrix can be cited using the metadata in [CITATION.cff](CITATION.cff). A Zenodo DOI can be created later from GitHub releases to make the release record citable and archived.
 
 ## Notes
 
@@ -140,6 +199,7 @@ Representative command outputs are documented in [EXAMPLE_COMMAND_OUTPUTS.md](/h
 - Figure axes use abbreviated scientific labels while full labels remain in tables and logs.
 - The Excel workbook includes an `ANI Matrix` sheet and a `Summary` sheet with off-diagonal ANI statistics, plus a `Metadata` sheet when metadata is supplied.
 - The code is organized so an AAI runner and parser can be added alongside the ANI workflow later.
+- ANI results should be interpreted alongside genome quality, phylogenomics, phenotype, and nomenclatural rules.
 
 ## Version
 
