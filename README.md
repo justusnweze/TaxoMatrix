@@ -203,4 +203,4 @@ TaxoMatrix can be cited using the metadata in [CITATION.cff](CITATION.cff). A Ze
 
 ## Version
 
-This release is intended as `TaxoMatrix v0.1.0`.
+This release is intended as `TaxoMatrix v0.1.1`.
