@@ -192,7 +192,7 @@ Detailed dependency citation placeholders are collected in [DEPENDENCY_CITATIONS
 
 ## Citation and DOI
 
-TaxoMatrix can be cited using the metadata in [CITATION.cff](CITATION.cff). A Zenodo DOI can be created later from GitHub releases to make the release record citable and archived.
+TaxoMatrix can be cited using the metadata in [CITATION.cff](CITATION.cff). The archived Zenodo DOI for the first public release is `10.5281/zenodo.20254967`.
 
 ## Notes
 

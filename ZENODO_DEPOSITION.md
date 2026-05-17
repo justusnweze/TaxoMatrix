@@ -6,7 +6,11 @@ TaxoMatrix
 
 ## Version
 
-0.1.1
+0.1.0
+
+## DOI
+
+10.5281/zenodo.20254967
 
 ## Description
 
