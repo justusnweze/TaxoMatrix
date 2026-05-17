@@ -1,5 +1,7 @@
 # TaxoMatrix
 
+[![GitHub release](https://img.shields.io/github/v/release/justusnweze/TaxoMatrix)](https://github.com/justusnweze/TaxoMatrix/releases)
+
 TaxoMatrix is a Python command-line workflow for generating all-vs-all ANI outputs from a folder of microbial genome FASTA files. It combines FastANI execution, publication-friendly genome labeling, matrix export, and clustered heatmap rendering in a reproducible local workflow.
 
 ## Features
